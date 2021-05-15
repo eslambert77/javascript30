@@ -7,6 +7,42 @@
 <body>
 <canvas id="draw" width="800" height="800"></canvas>
 <script>
+  const canvas = document.querySelector("#draw");
+  const context = canvas.getContext("2d");
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  context.lineWidth = 100;
+  context.lineJoin = 'round';
+  context.lineCap = 'round';
+  let isDrawing = false;
+  // let gradient = context.createLinearGradient(0, 0, canvas.width, canvas.height);
+  // gradient.addColorStop(0.1, "#88f");
+  // gradient.addColorStop(0.2, "#9ef");
+  // gradient.addColorStop(1.0, "#fff");
+  //context.strokeStyle = gradient;
+  let lastX = 0;
+  let lastY = 0;
+  let hue = 0;
+
+
+  document.addEventListener("mousedown", (e) => {
+    isDrawing = true;
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+  });
+
+  document.addEventListener("mousemove", drawPath);
+  document.addEventListener('mouseup', () => isDrawing = false);
+  document.addEventListener('mouseout', () => isDrawing = false);
+
+  function drawPath(e) {
+    if(!isDrawing) return;
+    context.beginPath();
+    context.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+    context.lineTo(e.offsetX, e.offsetY);
+    context.stroke();
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+    hue++;
+  }
 </script>
 
 <style>

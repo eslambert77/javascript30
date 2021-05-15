@@ -17,6 +17,54 @@
 <script>
 const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
 
+let cities = [];
+fetchData(endpoint).then(data => {
+  for(let val in data) {
+    cities.push(data[val]);
+  }
+  
+});
+//check for input or change listener on the big input field
+document.querySelector(".search").addEventListener('input', handleSearch);
+
+async function fetchData(url) {
+  let response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  let data = await response.json();
+
+  return data;
+}
+
+function handleSearch() {
+  let parent = document.querySelector(".suggestions");
+  let children = Array.from(document.querySelectorAll('.suggestions li'));
+  for(let child of children) {
+    parent.removeChild(child);
+  }
+  //filter out array if it contains the text
+  let filtered = filterData(this.value);
+  //remove the `filter for a city and or a state`
+  
+  //display by creating a big list and appending to parent
+  for(let city of filtered) {
+    let item = document.createElement('li');
+    item.textContent = `${city['city']},${city['state']}`;
+    let span = document.createElement('span');
+    span.classList = "population";
+    span.textContent = city['population'];
+    item.appendChild(span);
+    parent.appendChild(item);
+  }
+}
+
+function filterData(val) {
+  let splicedData = cities.filter(city => city['city'].toLowerCase().includes(val.toLowerCase())|| city['state'].toLowerCase().includes(val.toLowerCase()));
+  return splicedData;
+}
+
 </script>
 </body>
 </html>
